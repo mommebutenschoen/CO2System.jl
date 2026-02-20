@@ -35,7 +35,7 @@ using Test
     bfm_i = (Rho=1025.711,DIC=2000.0,PO4=0.0,pr_in=100.0,Si=0.0,T=18.0,TA=2300.0,
         patm=1013.25,S=35.0)
     bfm_o = (HCO3=1781.9086,fCO2 =305.18082,pCO2=316.96063,OmegaC=4.882114f0,CO3=207.7665,
-        CO2=10.325228,pH=8.143048,OmegaA=3.160656)
+        CO2=10.325228,pH=8.143048,OmegaA=3.160656,Hplus=7.1936881683840565e-9)
 
     function test()
         cs = CarbonateSystem(; inputs..., opt_inputs...)
