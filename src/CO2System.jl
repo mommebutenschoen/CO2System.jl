@@ -71,7 +71,7 @@ const Rgas_atm :: FT = 82.05736    # (cm3 * atm) / (mol * K)  CODATA (2006)
 const vbarCO2 :: FT = 32.3        # partial molal volume (cm3 / mol) from Weiss (1974, Appendix, paragraph 3)
 const CaRelCon :: FT = 0.02128     # Calcium ion relative concentration See Dickson (2007) and Munhoven (2013)
 const p_atm0 :: FT = 1013.25 # Atmospheric pressure at sea level [mbar]
-const bar2atm :: FT = 1.0/p_atm0 # Conversion factor from bar to atm
+const bar2atm :: FT = 1000.0/p_atm0 # Conversion factor from bar to atm
 
 export CarbonateSystem
 
@@ -405,14 +405,13 @@ function CarbonateSystem(; S::FT,T::FT,Rho::FT,PO4::FT,Sil::FT,DIC::FT,TA::FT,pa
   OmegaC = (Ca*cc) / CSeq.Kspc
 
   # Determine CO2 fugacity [uatm]
-  tfco2 = cu * 1.e6/CSeq.K0
-  fCO2 = tfco2
+  fCO2 = cu * 1.e6/CSeq.K0
 
   # Determine CO2 partial pressure from CO2 fugacity [uatm]
   # compute fugacity coefficient terms : B, Del, xc2
   B = -1636.75 + 12.0408*tk - 0.0327957*(tk*tk) + 0.0000316528*(tk*tk*tk)
   Del = 57.7 - 0.118*tk
-  xCO2approx = tfco2 * 1.e-6
+  xCO2approx = fCO2 * 1.e-6
 
   if press > 0
      xCO2approx *= exp( ((1.0-Ptot)*32.3)/(82.05736*tk) )   # of K0 press. correction, see Weiss (1974, equation 5)
@@ -420,7 +419,7 @@ function CarbonateSystem(; S::FT,T::FT,Rho::FT,PO4::FT,Sil::FT,DIC::FT,TA::FT,pa
 
   xc2 = (1. - xCO2approx)^2
   fugcoeff = exp( Ptot*(B + 2.0*xc2*Del)/(Rgas_atm*tk) )
-  pco2 = tfco2 / fugcoeff
+  pco2 = fCO2 / fugcoeff
 
   # scale from mol/kg -----> umol/kg
   co2  = cu * MEG
