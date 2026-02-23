@@ -128,21 +128,21 @@ function CarbonateSystem(; S::FT,T::FT,Rho::FT,PO4::FT,Sil::FT,DIC::FT,TA::FT,pa
 
   # Absolute temperature (Kelvin) and related values
   tk     = T - ZERO_KELVIN  # T is in degC; tk is in degK
-  temp2  = T * T
+  temp2  = T^2
   tk100  = tk / 100.
-  tk1002 = tk100 * tk100
+  tk1002 = tk100^2
   invtk  = 1. / tk
   dlogtk = log(tk)
 
   # Salinity and simply related values
   s  = S
-  s2 = S*S
+  s2 = S^2
   sqrts = sqrt(S)
   s15 = S^1.5
 
   # Hydrostatic Pressure [dbar]
   press = p0 * 0.1  # convert from dbar to bar
-  pr2   = press * press / Rgas
+  pr2   = press^2 / Rgas
   pr    = press / Rgas
 
   # Atmospheric pressure
@@ -157,7 +157,7 @@ function CarbonateSystem(; S::FT,T::FT,Rho::FT,PO4::FT,Sil::FT,DIC::FT,TA::FT,pa
 
   # ionic strength
   is = 19.924*s/(1000.0-1.005*s)
-  is2 = is*is
+  is2 = is^2
   sqrtis = sqrt(is)
 
   # Total concentrations for sulfate, fluoride, and boron
@@ -384,7 +384,7 @@ function CarbonateSystem(; S::FT,T::FT,Rho::FT,PO4::FT,Sil::FT,DIC::FT,TA::FT,pa
   pH = -1. * log10( H )
 
   # Compute carbonate Alk (Ac) by difference: from total Alk and other Alk components
-  HSO4 = St/(1.0 + CSeq.Ks/(H/(1.0 + St/CSeq.Ks)))
+  HSO4 = St/(1.0 + CSeq.Ks*(1.0 + St/CSeq.Ks)/H)
   HF   = 1.0 / (1.0 + CSeq.Kf/H)
   HSI  = 1.0 / (1.0 + H/CSeq.Ksi)
   HPO4 = (CSeq.K1p*CSeq.K2p*(H + 2.0*CSeq.K3p) - H^3)    /
